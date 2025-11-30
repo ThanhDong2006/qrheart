@@ -1,3 +1,6 @@
+function utf8Encode(str) {
+    return unescape(encodeURIComponent(str));
+}
 // Lấy phần tử canvas
 const canvas = document.getElementById("heartCanvas");
 const ctx = canvas.getContext("2d");
@@ -65,19 +68,16 @@ function drawHeartBackground(color) {
 /* ---- HÀM VẼ QR CODE LÊN TRÁI TIM ---- */
 function drawQRCode(text, color) {
   const qr = qrcode(0, "M");
-  qr.addData(text);
+qr.addData(utf8Encode(text));  // ĐÃ FIX
   qr.make();
-
   const moduleCount = qr.getModuleCount();
   const qrSize = 180;
   const scale = qrSize / moduleCount;
   const offsetX = (canvas.width - qrSize) / 2;
   const offsetY = (canvas.height - qrSize) / 2 - 32;
-
   const bgColor = document.getElementById("bgColorPicker").value;
   ctx.fillStyle = bgColor;
   ctx.fillRect(offsetX, offsetY, qrSize, qrSize);
-
   for (let row = 0; row < moduleCount; row++) {
     for (let col = 0; col < moduleCount; col++) {
       if (qr.isDark(row, col)) {
@@ -92,6 +92,7 @@ function drawQRCode(text, color) {
     }
   }
 }
+
 
 /* ---- HÀM TỔNG GỌI VẼ TRÁI TIM + QR CODE ---- */
 function draw(callback) {
